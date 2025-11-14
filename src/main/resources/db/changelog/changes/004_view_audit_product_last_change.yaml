@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-view-audit-product-last-change
+      author: demo
+      runOnChange: true
+      changes:
+        - createView:
+            viewName: V_PRODUCT_AUD_LAST_CHANGE
+            replaceIfExists: true
+            selectQuery: |
+              SELECT *
+              FROM (
+                SELECT
+                  pa.*,
+                  ROW_NUMBER() OVER (PARTITION BY pa.ID ORDER BY pa.REV DESC) AS RN
+                FROM PRODUCT_AUD pa
+              )
+              WHERE RN = 1

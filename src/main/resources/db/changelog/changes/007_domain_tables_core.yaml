@@ -1,0 +1,144 @@
+databaseChangeLog:
+  # CATEGORY
+  - changeSet:
+      id: 007-domain-tables-category
+      author: demo
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: CATEGORY
+      changes:
+        - createTable:
+            tableName: CATEGORY
+            columns:
+              - column:
+                  name: ID
+                  type: "NUMBER(19)"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: CODE
+                  type: "VARCHAR2(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: "VARCHAR2(150)"
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: CATEGORY
+            columnNames: CODE
+            constraintName: UQ_CATEGORY_CODE
+
+  # SUPPLIER
+  - changeSet:
+      id: 007-domain-tables-supplier
+      author: demo
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: SUPPLIER
+      changes:
+        - createTable:
+            tableName: SUPPLIER
+            columns:
+              - column:
+                  name: ID
+                  type: "NUMBER(19)"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: CODE
+                  type: "VARCHAR2(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: "VARCHAR2(150)"
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: SUPPLIER
+            columnNames: CODE
+            constraintName: UQ_SUPPLIER_CODE
+
+  # PRODUCT
+  - changeSet:
+      id: 007-domain-tables-product
+      author: demo
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: PRODUCT
+      changes:
+        - createTable:
+            tableName: PRODUCT
+            columns:
+              - column:
+                  name: ID
+                  type: "NUMBER(19)"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: SKU
+                  type: "VARCHAR2(50)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: "VARCHAR2(200)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CURRENT_PRICE
+                  type: "NUMBER(15,2)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: "VARCHAR2(30)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CATEGORY_ID
+                  type: "NUMBER(19)"
+              - column:
+                  name: SUPPLIER_ID
+                  type: "NUMBER(19)"
+        - addUniqueConstraint:
+            tableName: PRODUCT
+            columnNames: SKU
+            constraintName: UQ_PRODUCT_SKU
+        - addForeignKeyConstraint:
+            baseTableName: PRODUCT
+            baseColumnNames: CATEGORY_ID
+            referencedTableName: CATEGORY
+            referencedColumnNames: ID
+            constraintName: FK_PRODUCT_CATEGORY
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: PRODUCT
+            baseColumnNames: SUPPLIER_ID
+            referencedTableName: SUPPLIER
+            referencedColumnNames: ID
+            constraintName: FK_PRODUCT_SUPPLIER
+            onDelete: SET NULL
+        - createIndex:
+            tableName: PRODUCT
+            indexName: IDX_PRODUCT_CATEGORY_ID
+            columns:
+              - column:
+                  name: CATEGORY_ID
+        - createIndex:
+            tableName: PRODUCT
+            indexName: IDX_PRODUCT_SUPPLIER_ID
+            columns:
+              - column:
+                  name: SUPPLIER_ID

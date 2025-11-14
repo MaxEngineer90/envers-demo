@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-view-audit-product-interval
+      author: demo
+      runOnChange: true
+      changes:
+        - createView:
+            viewName: V_PRODUCT_AUD_INTERVAL
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                ID,
+                SKU,
+                NAME,
+                CURRENT_PRICE,
+                STATUS,
+                CATEGORY_ID,
+                SUPPLIER_ID,
+                REV AS REV_FROM,
+                LEAD(REV) OVER (PARTITION BY ID ORDER BY REV) AS REV_TO,
+                REVTYPE
+              FROM PRODUCT_AUD

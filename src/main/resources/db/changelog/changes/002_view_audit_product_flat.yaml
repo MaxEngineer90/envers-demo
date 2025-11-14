@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-view-audit-product-flat
+      author: demo
+      runOnChange: true
+      changes:
+        - createView:
+            viewName: V_PRODUCT_AUD_FLAT
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                ID,
+                SKU,
+                NAME,
+                CURRENT_PRICE,
+                STATUS,
+                CATEGORY_ID,
+                SUPPLIER_ID,
+                REV,
+                REVTYPE,
+                SKU_MOD,
+                NAME_MOD,
+                CURRENT_PRICE_MOD,
+                STATUS_MOD,
+                CATEGORY_ID_MOD,
+                SUPPLIER_ID_MOD
+              FROM PRODUCT_AUD
