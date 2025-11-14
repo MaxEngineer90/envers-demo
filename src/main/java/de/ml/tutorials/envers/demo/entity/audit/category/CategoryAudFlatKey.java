@@ -1,4 +1,4 @@
-package de.ml.tutorials.envers.demo.entity.audit;
+package de.ml.tutorials.envers.demo.entity.audit.category;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;

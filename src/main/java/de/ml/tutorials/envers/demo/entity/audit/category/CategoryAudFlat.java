@@ -1,6 +1,6 @@
 package  de.ml.tutorials.envers.demo.entity.audit.category;
 
-import de.ml.tutorials.envers.demo.entity.audit.CategoryAudFlatKey;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
