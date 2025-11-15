@@ -1,0 +1,244 @@
+# file: src/main/resources/db/changelog/changes/0002-audit-tables.yaml
+databaseChangeLog:
+  - changeSet:
+      id: 0007-create-product-aud
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: PRODUCT_AUD
+            columns:
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: SKU
+                  type: VARCHAR2(50 CHAR)
+              - column:
+                  name: NAME
+                  type: VARCHAR2(255 CHAR)
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP(6)
+        - addPrimaryKey:
+            tableName: PRODUCT_AUD
+            columnNames: PRODUCT_ID, REV
+            constraintName: PK_PRODUCT_AUD
+        - addForeignKeyConstraint:
+            baseTableName: PRODUCT_AUD
+            baseColumnNames: REV
+            referencedTableName: REVINFO
+            referencedColumnNames: REV
+            constraintName: FK_PRODUCT_AUD_REV
+
+  - changeSet:
+      id: 0008-create-price-revision-aud
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: PRICE_REVISION_AUD
+            columns:
+              - column:
+                  name: REVISION_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+              - column:
+                  name: PRICE_GROSS
+                  type: NUMBER(10,2)
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+              - column:
+                  name: VALID_FROM
+                  type: TIMESTAMP(6)
+              - column:
+                  name: VALID_TO
+                  type: TIMESTAMP(6)
+              - column:
+                  name: RECORDED_AT
+                  type: TIMESTAMP(6)
+        - addPrimaryKey:
+            tableName: PRICE_REVISION_AUD
+            columnNames: REVISION_ID, REV
+            constraintName: PK_PRICE_REVISION_AUD
+        - addForeignKeyConstraint:
+            baseTableName: PRICE_REVISION_AUD
+            baseColumnNames: REV
+            referencedTableName: REVINFO
+            referencedColumnNames: REV
+            constraintName: FK_PRICE_REVISION_AUD_REV
+
+  - changeSet:
+      id: 0009-create-customer-aud
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: CUSTOMER_AUD
+            columns:
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: FIRST_NAME
+                  type: VARCHAR2(120 CHAR)
+              - column:
+                  name: LAST_NAME
+                  type: VARCHAR2(120 CHAR)
+              - column:
+                  name: EMAIL
+                  type: VARCHAR2(254 CHAR)
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP(6)
+        - addPrimaryKey:
+            tableName: CUSTOMER_AUD
+            columnNames: CUSTOMER_ID, REV
+            constraintName: PK_CUSTOMER_AUD
+        - addForeignKeyConstraint:
+            baseTableName: CUSTOMER_AUD
+            baseColumnNames: REV
+            referencedTableName: REVINFO
+            referencedColumnNames: REV
+            constraintName: FK_CUSTOMER_AUD_REV
+
+  - changeSet:
+      id: 0010-create-orders-aud
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: ORDERS_AUD
+            columns:
+              - column:
+                  name: ORDER_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+              - column:
+                  name: ORDERED_AT
+                  type: TIMESTAMP(6)
+              - column:
+                  name: STATUS
+                  type: VARCHAR2(30 CHAR)
+              - column:
+                  name: TOTAL_GROSS
+                  type: NUMBER(12,2)
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+        - addPrimaryKey:
+            tableName: ORDERS_AUD
+            columnNames: ORDER_ID, REV
+            constraintName: PK_ORDERS_AUD
+        - addForeignKeyConstraint:
+            baseTableName: ORDERS_AUD
+            baseColumnNames: REV
+            referencedTableName: REVINFO
+            referencedColumnNames: REV
+            constraintName: FK_ORDERS_AUD_REV
+
+  - changeSet:
+      id: 0011-create-order-line-aud
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: ORDER_LINE_AUD
+            columns:
+              - column:
+                  name: LINE_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: NUMBER(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ORDER_ID
+                  type: NUMBER(19)
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+              - column:
+                  name: QTY
+                  type: NUMBER(10,3)
+              - column:
+                  name: PRICE_PAID_GROSS
+                  type: NUMBER(10,2)
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+              - column:
+                  name: PRICED_AT
+                  type: TIMESTAMP(6)
+              - column:
+                  name: PRICE_REVISION_ID_AT_PRICING
+                  type: NUMBER(19)
+        - addPrimaryKey:
+            tableName: ORDER_LINE_AUD
+            columnNames: LINE_ID, REV
+            constraintName: PK_ORDER_LINE_AUD
+        - addForeignKeyConstraint:
+            baseTableName: ORDER_LINE_AUD
+            baseColumnNames: REV
+            referencedTableName: REVINFO
+            referencedColumnNames: REV
+            constraintName: FK_ORDER_LINE_AUD_REV

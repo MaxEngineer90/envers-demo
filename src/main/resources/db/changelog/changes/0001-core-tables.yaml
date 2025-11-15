@@ -1,0 +1,290 @@
+# file: src/main/resources/db/changelog/changes/0001-core-tables.yaml
+databaseChangeLog:
+  - changeSet:
+      id: 0001-create-revinfo
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: REVINFO
+            columns:
+              - column:
+                  name: REV
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTSTMP
+                  type: TIMESTAMP(6)
+                  defaultValueComputed: SYSTIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 0002-create-product
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: PRODUCT
+            columns:
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: SKU
+                  type: VARCHAR2(50 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: VARCHAR2(255 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP(6)
+                  defaultValueComputed: SYSTIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: PRODUCT
+            columnNames: SKU
+            constraintName: UK_PRODUCT_SKU
+
+  - changeSet:
+      id: 0003-create-price-revision
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: PRICE_REVISION
+            columns:
+              - column:
+                  name: REVISION_ID
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRICE_GROSS
+                  type: NUMBER(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: VALID_FROM
+                  type: TIMESTAMP(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: VALID_TO
+                  type: TIMESTAMP(6)
+              - column:
+                  name: RECORDED_AT
+                  type: TIMESTAMP(6)
+                  defaultValueComputed: SYSTIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: PRICE_REVISION
+            baseColumnNames: PRODUCT_ID
+            referencedTableName: PRODUCT
+            referencedColumnNames: PRODUCT_ID
+            constraintName: FK_PRICE_REVISION_PRODUCT
+        - createIndex:
+            tableName: PRICE_REVISION
+            indexName: IDX_PRICE_REVISION_VALIDITY
+            columns:
+              - column:
+                  name: PRODUCT_ID
+              - column:
+                  name: VALID_FROM
+              - column:
+                  name: VALID_TO
+
+  - changeSet:
+      id: 0004-create-customer
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: CUSTOMER
+            columns:
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: FIRST_NAME
+                  type: VARCHAR2(120 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: LAST_NAME
+                  type: VARCHAR2(120 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EMAIL
+                  type: VARCHAR2(254 CHAR)
+              - column:
+                  name: CREATED_AT
+                  type: TIMESTAMP(6)
+                  defaultValueComputed: SYSTIMESTAMP
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: CUSTOMER
+            columnNames: EMAIL
+            constraintName: UK_CUSTOMER_EMAIL
+            deferrable: false
+            disabled: true
+
+  - changeSet:
+      id: 0005-create-orders
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: ORDERS
+            columns:
+              - column:
+                  name: ORDER_ID
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ORDERED_AT
+                  type: TIMESTAMP(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: VARCHAR2(30 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TOTAL_GROSS
+                  type: NUMBER(12,2)
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: ORDERS
+            baseColumnNames: CUSTOMER_ID
+            referencedTableName: CUSTOMER
+            referencedColumnNames: CUSTOMER_ID
+            constraintName: FK_ORDERS_CUSTOMER
+
+  - changeSet:
+      id: 0006-create-order-line
+      author: maxengineer90
+      changes:
+        - createTable:
+            tableName: ORDER_LINE
+            columns:
+              - column:
+                  name: LINE_ID
+                  type: NUMBER(19)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ORDER_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRODUCT_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CUSTOMER_ID
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: QTY
+                  type: NUMBER(10,3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRICE_PAID_GROSS
+                  type: NUMBER(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CURRENCY
+                  type: VARCHAR2(3 CHAR)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRICED_AT
+                  type: TIMESTAMP(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRICE_REVISION_ID_AT_PRICING
+                  type: NUMBER(19)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: ORDER_LINE
+            baseColumnNames: ORDER_ID
+            referencedTableName: ORDERS
+            referencedColumnNames: ORDER_ID
+            constraintName: FK_ORDER_LINE_ORDER
+        - addForeignKeyConstraint:
+            baseTableName: ORDER_LINE
+            baseColumnNames: PRODUCT_ID
+            referencedTableName: PRODUCT
+            referencedColumnNames: PRODUCT_ID
+            constraintName: FK_ORDER_LINE_PRODUCT
+        - addForeignKeyConstraint:
+            baseTableName: ORDER_LINE
+            baseColumnNames: CUSTOMER_ID
+            referencedTableName: CUSTOMER
+            referencedColumnNames: CUSTOMER_ID
+            constraintName: FK_ORDER_LINE_CUSTOMER
+        - addForeignKeyConstraint:
+            baseTableName: ORDER_LINE
+            baseColumnNames: PRICE_REVISION_ID_AT_PRICING
+            referencedTableName: PRICE_REVISION
+            referencedColumnNames: REVISION_ID
+            constraintName: FK_ORDER_LINE_PRICE_REV
+        - createIndex:
+            tableName: ORDER_LINE
+            indexName: IDX_ORDER_LINE_PRODUCT_REV
+            columns:
+              - column:
+                  name: PRODUCT_ID
+              - column:
+                  name: PRICE_REVISION_ID_AT_PRICING
+              - column:
+                  name: PRICE_PAID_GROSS

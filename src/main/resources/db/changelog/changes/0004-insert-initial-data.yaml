@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0004-insert-initial-data
+      author: maxengineer90
+      changes:
+        - sqlFile:
+            path: ../data/0004-seed-entities-audit.sql
+            relativeToChangelogFile: true

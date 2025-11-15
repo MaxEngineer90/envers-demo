@@ -1,0 +1,77 @@
+language: yaml
+databaseChangeLog:
+  - changeSet:
+      id: 0012-create-audit-views
+      author: maxengineer90
+      changes:
+        - createView:
+            viewName: PRODUCT_AUD_VIEW
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                PRODUCT_ID,
+                REV,
+                REVTYPE,
+                SKU,
+                NAME,
+                CREATED_AT
+              FROM PRODUCT_AUD
+        - createView:
+            viewName: PRICE_REVISION_AUD_VIEW
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                REVISION_ID,
+                REV,
+                REVTYPE,
+                PRODUCT_ID,
+                PRICE_GROSS,
+                CURRENCY,
+                VALID_FROM,
+                VALID_TO,
+                RECORDED_AT
+              FROM PRICE_REVISION_AUD
+        - createView:
+            viewName: CUSTOMER_AUD_VIEW
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                CUSTOMER_ID,
+                REV,
+                REVTYPE,
+                FIRST_NAME,
+                LAST_NAME,
+                EMAIL,
+                CREATED_AT
+              FROM CUSTOMER_AUD
+        - createView:
+            viewName: ORDERS_AUD_VIEW
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                ORDER_ID,
+                REV,
+                REVTYPE,
+                CUSTOMER_ID,
+                ORDERED_AT,
+                STATUS,
+                TOTAL_GROSS,
+                CURRENCY
+              FROM ORDERS_AUD
+        - createView:
+            viewName: ORDER_LINE_AUD_VIEW
+            replaceIfExists: true
+            selectQuery: |
+              SELECT
+                LINE_ID,
+                REV,
+                REVTYPE,
+                ORDER_ID,
+                PRODUCT_ID,
+                CUSTOMER_ID,
+                QTY,
+                PRICE_PAID_GROSS,
+                CURRENCY,
+                PRICED_AT,
+                PRICE_REVISION_ID_AT_PRICING
+              FROM ORDER_LINE_AUD
