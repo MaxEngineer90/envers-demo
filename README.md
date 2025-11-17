@@ -207,3 +207,48 @@ Käufe:
 - Trennt numerische Gleichheit (3,00 €) von der fachlichen Identität eines Preiszustands (Revision).
 - Reproduzierbar: Gleiches T → gleiches Set S → gleiche Zählung.
 - Technologie-agnostisch: Funktioniert unabhängig davon, wie komplex die Preisfindung upstream ist.
+
+## SQL Beispiele:
+
+````sql
+WITH s_prices AS (SELECT pr.product_id, pr.revision_id
+                  FROM price_revision pr
+                  WHERE pr.currency = 'EUR'
+                    AND pr.price_gross = 3.00
+                    AND pr.valid_from <= :T
+                    AND (pr.valid_to > :T OR pr.valid_to IS NULL))
+SELECT COUNT(DISTINCT ol.customer_id) AS customers_paid_3_eur_same_revision
+FROM order_lines ol
+         JOIN orders o
+              ON o.order_id = ol.order_id
+         JOIN s_prices s
+              ON s.product_id = ol.product_id
+                  AND s.revision_id = ol.price_revision_id_at_pricing
+WHERE ol.currency = 'EUR'
+  AND ol.price_paid_gross = 3.00 -- alternativ: ROUND(ol.price_paid_gross, 2) = 3.00
+  AND o.status IN ('paid', 'fulfilled');
+-- Optional: Käufe auf einen Zeitraum einschränken (z. B. um T herum)
+-- AND o.ordered_at BETWEEN :T - INTERVAL '30 day' AND :T + INTERVAL '30 day'
+````
+
+````sql
+WITH s_prices AS (SELECT pr.product_id, pr.revision_id
+                  FROM price_revision pr
+                  WHERE pr.currency = 'EUR'
+                    AND pr.price_gross = 3.00
+                    AND pr.valid_from <= :T
+                    AND (pr.valid_to > :T OR pr.valid_to IS NULL))
+SELECT s.product_id,
+       COUNT(DISTINCT ol.customer_id) AS customers_cnt
+FROM s_prices s
+         JOIN order_lines ol
+              ON ol.product_id = s.product_id
+                  AND ol.price_revision_id_at_pricing = s.revision_id
+                  AND ol.currency = 'EUR'
+                  AND ol.price_paid_gross = 3.00
+         JOIN orders o
+              ON o.order_id = ol.order_id
+                  AND o.status IN ('paid', 'fulfilled')
+GROUP BY s.product_id
+ORDER BY s.product_id;
+````
