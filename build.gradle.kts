@@ -29,6 +29,11 @@ dependencies {
     // Envers
     implementation("org.hibernate.orm:hibernate-envers")
 
+    // Blaze
+    implementation(platform("com.blazebit:blaze-persistence-bom:1.6.17"))
+    implementation("com.blazebit:blaze-persistence-core:1.6.17")
+    implementation("com.blazebit:blaze-persistence-integration-hibernate-6.2")
+
     // Oracle JDBC
     implementation("com.oracle.database.jdbc:ojdbc11:23.5.0.24.07")
 
